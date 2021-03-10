@@ -3,6 +3,6 @@
 use CodeIgniter\Model;
  
 class ContactModels extends Model{
-    protected $table = 'contact';
-    protected $allowedFields = ['ContactId','FirstName','LastName','Company','JobTitle','Email','Phone','Notes'];
+    protected $table = 'contacts';
+    protected $allowedFields = ['id ','first_Name','last_Name','company','JobTitle','job','email','phone','note','favory','createDate','image'];
 }
