@@ -6,7 +6,7 @@ use app\ContactModels;
 
 class Contact extends BaseController
 {
-
+	
 
 	public function index()
 	{
@@ -14,8 +14,8 @@ class Contact extends BaseController
 		//$data = [''=>$
 
 
-		echo view('../Views/Common/Header');
+		echo view('Common/Header');
 		echo view('Contact');
-		echo View('../Views/Common/Footer');
+		echo View('Common/Footer');
 	}
 }
