@@ -6,8 +6,16 @@ use app\ContactModels;
 
 class Contact extends BaseController
 {
+
+
 	public function index()
 	{
-		return view('Contacts');
+
+		//$data = [''=>$
+
+
+		echo view('../Views/Common/Header');
+		echo view('Contact');
+		echo View('../Views/Common/Footer');
 	}
 }
