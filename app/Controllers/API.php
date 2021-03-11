@@ -81,28 +81,28 @@ class Api extends BaseController{
 
             //3.j'interroge la base de donnée pour savoir si il est deja favoris ou non grace a une requête
             $contact=$this->contactModel->where('id',$id)->first();
-            $etatAction=['response'=>false];
+            
             
             //4.si il est favoris je le retire sinon je l'ajoute
             if(!empty($contact)){
                 
                 //DEBUT test favoris (YES)
                 if($contact['favory'] == 'Yes'){
-                    $this->contactModel->where('id',$id)->set('favory','NO')->update();
-                    
+                    $this->contactModel->where('id',$id)->set('favory','No')->update();
+                    $etatFav=['response'=>false];
                   
-                //END test favoris (YES) 
+                //END test favoris (NO) 
                 }else{
                     $this->contactModel->where('id',$id)->set('favory','Yes')->update();
-                    
+                    $etatFav=['response'=>true]; 
                 }   
                  
             }
 
             //5.je vérifie que ma requete a bien été faite
-               $etatAction=['response'=>true]; 
+               
         }
-             return $this->response->setJSON($etatAction);
+             return $this->response->setJSON($etatFav);
 
     }
 }
