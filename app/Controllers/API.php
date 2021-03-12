@@ -121,7 +121,7 @@ class Api extends BaseController{
                 $dataSave = 
                 [
                     'last_Name' => $this->request->getVar('createName'),
-                    'phone' => $this->request->getVar('updateNucreateNumbermber')
+                    'phone' => $this->request->getVar('createNumber')
                 ];
                         $this->contactModel->where('id', $this->request->getVar('id'))
                                                 ->set($dataSave)

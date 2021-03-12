@@ -1,0 +1,25 @@
+-.Cette api est un outils de management de liste de contacte créer par Ponceau Nelick.
+
+1ère idée{
+    -.Elle permet notemment de  creer des contactes et les ajouter a la liste de contacte, 
+de plus il permet de modifier les information d'un contacte mais aussi d'en supprimer.
+une fonction de mise en favoris y est incorporé
+}2ème idée{
+    -.Elle permet notemment de lister, creer, modifier et supprimer des contact,
+elle est aussi doté d'une fonction de mise en favoris 
+}
+
+elle envoie les information par method post en type json 
+
+
+-. elle a été codé en utilisant PHP 7.3 et codeigniter 4 ainsi que wampserver 3.2.3 pour gerer la base de donnée(phpmyhadmin,Maria DB)
+
+
+
+
+
+
+
+This API is a data managing tool for a contact list created by Ponceau Nelwick
+
+
