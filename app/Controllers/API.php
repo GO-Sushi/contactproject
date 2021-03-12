@@ -37,14 +37,111 @@ class Api extends BaseController{
         //conversion du type originel de listcontacts -> le type JSON
         return $this->response->setJSON($listecontacts);
     }
+
+    /*creer un nouveau contact avec une fonction create
+    il reçois des information par method post avec un  this request get var:post
+            first_Name :string
+            last_Name :string
+            company :string
+            job :string
+            email :string
+            phone :string
+            note :text
+            favory :string
+            createDate :date
+            image :image.
+
+     informer avec true ou false pour dire si la fonction a fonctionné.
+   
+     */
+
     
+
+    public function create(){
+ 
+             /********************************************************************************
+				 * Je vérifie si les champs sont correctement remplis
+				 * exemple : nom du formulaire est requis et devra 
+				  avoir une longueur min de 3 characteres et une longueur max de 30 caracteres
+		 		********************************************************************************/
+            $rules = [
+                'createName'         => 'required',
+                'createNumber'      => 'required',
+            ];
+
+             /******************************************************************
+		         * Si les champs sont valides permet la soumission du formulaire
+		         ********************************************************************/
+            //DEBUT rules validation (YES)
+            if($this->validate($rules)){
+					$dataSave = 
+					[
+						'last_Name' => $this->request->getVar('createName'),
+						'phone' => $this->request->getVar('createNumber'),
+					];
+
+                    //fontion de creation 
+                    $this->contactModel->save($dataSave);
+                    $etatCreate=['response'=>true];
+                    
+            //END validation rules (YES)
+            }else
+            //DEBUT validation rules (NO)
+            {
+                if(empty($this->request->getVar('createName'))){
+                    $etatCreate["ERROR"]['last_Name']="n'est pas remplis";
+                }
+                if(empty($this->request->getVar('createNumber'))){
+                    $etatCreate["ERROR"]['phone']="n'est pas remplis";
+                }
+                $etatCreate=['response'=>false];
+            //END validation rules (NO)
+            }
+        //END test de l'existence de last name et phone 
+        return $this->response->setJSON($etatCreate);
+    }
+
+
     //fonction de modification et d'ajout
     public function edit(){
 
+            //1.je recupere l'id du contacte a modifier
+            //$id=$this->request->getVar('id');
+            //.3 je fais mon tableau rules
 
+            $rules = [
+                'createName'         => 'required',
+                'createNumber'      => 'required',
+                'id'                => 'required'
+            ];
+            
+            /****** DEBUT rules validation ******/
+            if($this->validate($rules)){
+                //element a modifier
+                $dataSave = 
+                [
+                    'last_Name' => $this->request->getVar('createName'),
+                    'phone' => $this->request->getVar('updateNucreateNumbermber')
+                ];
+                        $this->contactModel->where('id', $this->request->getVar('id'))
+                                                ->set($dataSave)
+                                                ->update();
+                        $etatUpdate=['response'=>true];   
+            /****** END rules validation (YES) ******/ 
+            } else  /****** DEBUT validation (NO) ******/
+            {
+                if(empty($this->request->getVar('createName'))){
+                    $etatUpdate["ERROR"]['last_Name']="n'est pas remplis";
+                }
+                if(empty($this->request->getVar('createNumber'))){
+                    $etatUpdate["ERROR"]['phone']="n'est pas remplis";
+                }
+                $etatUpdate=['response'=>false];
+            } /******* END rules validation (NO) ******/
+        return $this->response->setJSON($etatUpdate);
+    }   
+          
 
-
-    }
 
     //fonction de suppression simple et multiple     
     public function delete(){
@@ -103,6 +200,5 @@ class Api extends BaseController{
                
         }
              return $this->response->setJSON($etatFav);
-
     }
 }
