@@ -1,47 +1,44 @@
-<?php 
+<?php
+
 namespace App\Controllers;
 use App\Controllers\BaseController;
+use App\Models\ContactModel;
 
-class Exercice extends BaseController{
+class Exercice extends BaseController {
 
+    public function index($id=null,$nom=null,$age=null,$sexe=null) {
 
-    public function __construct(){
-
-    
-    }
-
-    public function index($id=0 , $nom='Nelwick' , $age=20 , $sexe=''){
-
-        $data=[
-            'id'  =>  $id,
-            'nom' =>  $nom,
-            'age'  => $age,
-            'sexe' => $sexe
-        ];
-
-        echo $id ;
         
-        if($age > "18"){
-            echo "   tu est majeur";
-        }else{
-            echo "   tu n'est pas majeur";
-        }
 
         switch ($sexe) {
+
             case "homme":
-                echo " je suis un homme";
-                    break;
+
+                echo "Vous êtes un homme";
+
+            break;
+
             case "femme":
-                echo " je suis une femme";
-                break;
-            default: 
-                echo " vous n'avez pas précisé de sexe";
+
+                echo "Vous êtes une femme";
+            
+            break;
+
+            default:
+                
+                echo "Vous n'avez pas préciser de sexe";
         }
-        echo view('Exercice' , $data);
+        
+        $data = [
+            'id'=>$id,
+            'nom'=>$nom,
+            'age'=>$age,
+            'sexe'=>$sexe
+
+        ];
+        
+        echo view('exercice',$data);
+
     }
 
-    
-
 }
-
-?>

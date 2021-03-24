@@ -1,204 +1,285 @@
-<?php 
+<?php
+
 namespace App\Controllers;
 use App\Controllers\BaseController;
 use App\Models\ContactModel;
 
-class Api extends BaseController{
+class Api extends BaseController
 
-    public $contactModel = null;
+{
 
-    public function __construct(){
+    public $contactsModel = null;
+	
+	public function __construct() {
 
-		$this->contactModel = new ContactModel();
+		$this->contactsModel = new ContactModel();
+
+	}
+
+	/***************************************************************************************
+     Dans l'index , on va gérer la liste et la recherche
+     index administrates list contact and searching for a contact
+    **************************** ********************************************************** */
     
-    }
+    public function index() {
+		
+        
+        //$listContacts = $this->contactsModel->findAll();
+		
+        $listContacts = $this->contactsModel->orderBy('last_Name','ASC')
+                                            ->orderBy('first_Name','ASC')
+                                            ->paginate(10);
 
-    //fonction de listage + pagination et recherche
-    public function index(){
+            
+            if (!empty($this->request->getVar('type')) && !empty($this->request->getVar('contenuRecherche'))) {
+                
+                $contenuRecherche = $this->request->getVar('contenuRecherche');
+                $type = $this->request->getVar('type');
+        
 
-        $listecontacts=$this->contactModel->paginate(10);
+                switch($type) {
+
+                    case 'recherche':
+
+                    $listContacts = $this->contactsModel->like('last_Name',$contenuRecherche,'both',null,true);
+                    $listContacts = $this->contactsModel->orLike('first_Name',$contenuRecherche,'both',null,true);
+                    $listContacts = $this->contactsModel->orderBy('last_Name','ASC');
+                    $listContacts = $this->contactsModel->orderBy('first_Name','ASC');
+                    $listContacts = $this->contactsModel->paginate(2);
+
+                    break;
+
+                }
+
+            }
+
+            return $this->response->setJSON($listContacts); 
+
+
+	}
+
+    
+    /*********************************************************************************************
+     
+     Dans delete , on gère la suppression d'un ou plusieurs contacts
+     delete adminstrates deleting one or more contacts
+     
+     **************************** **************************************************************** */
+    
+    public function delete() {
+        
+        /*********************************************************************************************
          
-        //
-        if(!empty($this->request->getVar("type")) && !empty($this->request->getVar("elementRecherche"))){
-            $type=$this->request->getVar("type");
-            $elementRecherche=$this->request->getVar("elementRecherche");
+         1 je recupère identifiant du contact a supprimer
+         2 si il existe je passe au 3
+         3 je fais la requete pour supprimer
+         
+         4 j'informe l'etat de la suppression
+         **************************** **************************************************************** */
+        
+        $id = $this->request->getVar('id');
+        
+        $etatSuppression = ['response'=>'NOK'] ;
+        
+        if (!empty($id)) {
             
-            switch ($type){
-
-                case "recherche":
-                    //dd($listecontacts);
-                $listecontacts=$this->contactModel->like( "first_Name",$elementRecherche ,'both',null,true)
-                                                  ->orlike("last_Name",$elementRecherche ,'both',null,true)
-                                                  ->orderBy('id', 'ASC')->paginate(10);
-
-                break;
-            }
+            $contact = $this->contactsModel->where('id',$id)->first();
+            
+            $this->contactsModel->where('id',$id)->delete();
+            
+            $etatSuppression = ['response'=>'OK'] ;
+            
+            return $this->response->setJSON($etatSuppression); 
+            
         }
-        //conversion du type originel de listcontacts -> le type JSON
-        return $this->response->setJSON($listecontacts);
+        
+        return $this->response->setJSON($etatSuppression); 
+        
     }
-
-    /*creer un nouveau contact avec une fonction create
-    il reçois des information par method post avec un  this request get var:post
-            first_Name :string
-            last_Name :string
-            company :string
-            job :string
-            email :string
-            phone :string
-            note :text
-            favory :string
-            createDate :date
-            image :image.
-
-     informer avec true ou false pour dire si la fonction a fonctionné.
-   
-     */
-
+    /****************************************************************************************
+     Dans edit , on gère l'ajout et la modification d'un contact
+     edit administrates adding and editing a contact
+    **************************** ******************************************************** */
     
+    public function edit() {
 
-    public function create(){
- 
-             /********************************************************************************
-				 * Je vérifie si les champs sont correctement remplis
-				 * exemple : nom du formulaire est requis et devra 
-				  avoir une longueur min de 3 characteres et une longueur max de 30 caracteres
-		 		********************************************************************************/
-            $rules = [
-                'createName'         => 'required',
-                'createNumber'      => 'required',
-            ];
-
-             /******************************************************************
-		         * Si les champs sont valides permet la soumission du formulaire
-		         ********************************************************************/
-            //DEBUT rules validation (YES)
-            if($this->validate($rules)){
-					$dataSave = 
-					[
-						'last_Name' => $this->request->getVar('createName'),
-						'phone' => $this->request->getVar('createNumber'),
-					];
-
-                    //fontion de creation 
-                    $this->contactModel->save($dataSave);
-                    $etatCreate=['response'=>true];
-                    
-            //END validation rules (YES)
-            }else
-            //DEBUT validation rules (NO)
-            {
-                if(empty($this->request->getVar('createName'))){
-                    $etatCreate["ERROR"]['last_Name']="n'est pas remplis";
-                }
-                if(empty($this->request->getVar('createNumber'))){
-                    $etatCreate["ERROR"]['phone']="n'est pas remplis";
-                }
-                $etatCreate=['response'=>false];
-            //END validation rules (NO)
-            }
-        //END test de l'existence de last name et phone 
-        return $this->response->setJSON($etatCreate);
-    }
-
-
-    //fonction de modification et d'ajout
-    public function edit(){
-
-            //1.je recupere l'id du contacte a modifier
-            //$id=$this->request->getVar('id');
-            //.3 je fais mon tableau rules
-
-            $rules = [
-                'createName'         => 'required',
-                'createNumber'      => 'required',
-                'id'                => 'required'
-            ];
+        $etatAction = ['response'=>false] ;
+        
+        $rules = [
+            'id'        => 'required',
+            'last_Name' => 'required',
+            'phone'     => 'required'
+        ];
+        
+        if ($this->validate($rules)) {
             
-            /****** DEBUT rules validation ******/
-            if($this->validate($rules)){
-                //element a modifier
-                $dataSave = 
-                [
-                    'last_Name' => $this->request->getVar('createName'),
-                    'phone' => $this->request->getVar('createNumber')
-                ];
-                        $this->contactModel->where('id', $this->request->getVar('id'))
-                                                ->set($dataSave)
-                                                ->update();
-                        $etatUpdate=['response'=>true];   
-            /****** END rules validation (YES) ******/ 
-            } else  /****** DEBUT validation (NO) ******/
-            {
-                if(empty($this->request->getVar('createName'))){
-                    $etatUpdate["ERROR"]['last_Name']="n'est pas remplis";
-                }
-                if(empty($this->request->getVar('createNumber'))){
-                    $etatUpdate["ERROR"]['phone']="n'est pas remplis";
-                }
-                $etatUpdate=['response'=>false];
-            } /******* END rules validation (NO) ******/
-        return $this->response->setJSON($etatUpdate);
-    }   
-          
+            $id = $this->request->getVar('id');
+    
+            $contact = $this->contactsModel->where('id',$id)->first();
+                    
+                if (!empty($contact)) {
 
-
-    //fonction de suppression simple et multiple     
-    public function delete(){
-
-            //.1 je recupere l'id du contacte a supprimer
-            $id=$this->request->getVar('id');
-            $etatAction=['response'=>false];
-            //.2 si il existe je passe au 3
-            if(!empty($id)){
-
-                //.3 je fait ma requete pour supprimer le contacte
-                $this->contactModel->where('id',$id)->delete();
-
-                //.4 je vérifie que la suppression a bien été faite
-
+                    $last_Name = $this->request->getVar('last_Name');
+                    
+                    $phone = $this->request->getVar('phone');
                 
-                $etatAction=['response'=>true];
+                    $dataSave = [
+                        'last_Name'     => $last_Name,
+                        'phone'    	    => $phone,
+                        'first_Name'    => $this->request->getVar('last_Name'),
+                        'email'         => $this->request->getVar('email')
+
+                    ];
+
+                    $this->contactsModel->where('id',$id)->set($dataSave)->update();
+
+                    $etatAction = ['response'=>true] ;
                 
+                }  else {
+
+                    $etatAction["ERROR"]["ID"] = "Le contact/L'ID n'existe pas";
+
+                }       
+    
+            } else {
+                
+                if (empty($this->request->getVar('last_Name'))) {
+
+                    $etatAction["ERROR"]["Nom"] = "Le nom n'a pas été rempli";
+
+                }
+                
+                    if (empty($this->request->getVar('phone'))) {
+
+                        $etatAction["ERROR"]["Téléphone"] = "Le téléphone n'a pas été rempli";
+
+                    }
+
             }
-           
-         return $this->response->setJSON($etatAction);
+
+        return $this->response->setJSON($etatAction);
+
+        //Test de rajout de first name & email, check en base, test de rajout
         
     }
 
-    //fonction de mise en favoris des contacts
-    // utilise l'id à ajouter en paramètre
-    public function fav(){
+     /****************************************************************************************
+     Dans create , on gère l'ajout d'un contact
+      recup infos form post code igniter avec getVar de ces valeurs :
+     'Nom'(text),
+     'Prenom'(text),
+     'company',
+     Profession(text),
+     email(email),
+     NumTel(number),
+     Note(text),
+     Favoris(text),
+     Image(file)
+     return true si reussite et false si echec et pourquoi
+     Valeurs obligatoires : nom et num tel
 
-            //1.je recupere l'id du contacte a ajouter ou a supprimer des favoris
-        $id=$this->request->getVar('id');
+    **************************** ******************************************************** */
 
-            //2.je vérifie l'existence de ce contacte et si il existe je passe au 3
-            if(!empty($id)){
+    public function create() {
 
-            //3.j'interroge la base de donnée pour savoir si il est deja favoris ou non grace a une requête
-            $contact=$this->contactModel->where('id',$id)->first();
-            
-            
-            //4.si il est favoris je le retire sinon je l'ajoute
-            if(!empty($contact)){
+        $etatAction = ['response'=>false] ;
+
+        $rules = [
+            'last_Name'        => 'required',
+            'phone'     => 'required'
+        ];
+         
+            if($this->validate($rules)) {
                 
-                //DEBUT test favoris (YES)
-                if($contact['favory'] == 'Yes'){
-                    $this->contactModel->where('id',$id)->set('favory','No')->update();
-                    $etatFav=['response'=>false];
-                  
-                //END test favoris (NO) 
-                }else{
-                    $this->contactModel->where('id',$id)->set('favory','Yes')->update();
-                    $etatFav=['response'=>true]; 
-                }   
-                 
+            $last_Name = $this->request->getVar('last_Name');
+            
+            $phone = $this->request->getVar('phone');
+
+            $dataSave = [
+                'last_Name'     => $last_Name,
+                'phone'    	    => $phone
+            ];
+
+            $this->contactsModel->save($dataSave);            
+
+            $etatAction = ['response'=>true] ;
+
+            } else {
+                
+                if (empty($this->request->getVar('last_Name'))) {
+
+                    $etatAction["ERROR"]["Nom"] = "Le nom n'a pas été rempli";
+
+                }
+                
+                    if (empty($this->request->getVar('phone'))) {
+
+                        $etatAction["ERROR"]["Téléphone"] = "Le téléphone n'a pas été rempli";
+
+                    }   
+
             }
 
-            //5.je vérifie que ma requete a bien été faite
-               
-        }
-             return $this->response->setJSON($etatFav);
+        return $this->response->setJSON($etatAction); 
     }
+
+    /**************************************************************************************************************
+     
+    Dans favori , on gère si un contact peut être un favori ou être retiré des favoris
+    favori administrates if a contact can be added or removed from favorites
+
+    **************************** *********************************************************************************** */
+    
+    public function favori() {
+    
+    /*********************************************************************************************
+     1 je recupère identifiant du contact a mettre en favoris
+     2 si il existe je passe au 3
+     3 je fais la requete qui interroge la base qui dit si le contact est favori ou pas
+     4 si oui on retire des favoris
+     5 sinon on le rajoute
+     6 j'informe l'etat de l'action
+    **************************** **************************************************************** */
+    $etatFav = ['response'=>'NOK'] ;
+    
+    $id = $this->request->getVar('id');
+
+        if (!empty($id)) {
+
+            $contact = $this->contactsModel->where('id',$id)->first();
+
+    /**************************************************************************************************************
+     
+    On verifie si la requete a un resultat
+
+    **************************** *********************************************************************************** */
+
+                if (!empty($contact)) {
+
+                    if ($contact['favory'] == 'Yes') {
+                        
+                        $contact = $this->contactsModel->where('id',$id)->set('favory','No')->update();
+
+                        $etatFav = ['response'=>"Il n'est plus favori !"] ;
+
+                        return $this->response->setJSON($etatFav); 
+
+
+                    } else {
+
+                        $contact = $this->contactsModel->where('id',$id)->set('favory','Yes')->update();
+
+                        $etatFav = ['response'=>"Il est favori !"] ;
+
+                        return $this->response->setJSON($etatFav); 
+
+                    }
+
+                }
+                                   
+
+        }
+
+    }
+
 }

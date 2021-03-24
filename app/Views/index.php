@@ -111,28 +111,10 @@
       <div id="sidebar-list" class="sidebar-menu list-group position-relative animate fadeLeft delay-1">
         <div class="sidebar-list-padding app-sidebar sidenav" id="contact-sidenav">
           <ul class="contact-list display-grid">
-            <li class="sidebar-title">Filters</li>
-            <li class="active"><a href="javascript:void(0)" class="text-sub"><i class="material-icons mr-2">
-                  perm_identity </i> All
-                Contact</a></li>
-            <li><a href="javascript:void(0)" class="text-sub"><i class="material-icons mr-2"> history </i> Frequent</a>
-            </li>
-            <li><a href="javascript:void(0)" class="text-sub"><i class="material-icons mr-2"> star_border </i> Starred
-                Contacts</a></li>
-            <li class="sidebar-title">Options</li>
-            <li><a href="javascript:void(0)" class="text-sub"><i class="material-icons mr-2"> keyboard_arrow_down </i>
-                Import</a></li>
-            <li><a href="javascript:void(0)" class="text-sub"><i class="material-icons mr-2"> keyboard_arrow_up </i>
-                Export</a></li>
-            <li><a href="javascript:void(0)" class="text-sub"><i class="material-icons mr-2"> print </i> Print</a></li>
-            <li class="sidebar-title">Department</li>
-            <li><a href="javascript:void(0)" class="text-sub"><i class="purple-text material-icons small-icons mr-2">
-                  fiber_manual_record </i> Engineering</a></li>
-            <li><a href="javascript:void(0)" class="text-sub"><i class="amber-text material-icons small-icons mr-2">
-                  fiber_manual_record </i> Sales</a></li>
-            <li><a href="javascript:void(0)" class="text-sub"><i
-                  class="light-green-text material-icons small-icons mr-2">
-                  fiber_manual_record </i> Support</a></li>
+            <li class="sidebar-title"><a href="<?php echo base_url() ; ?>">Liste des contacts</a></li>
+            
+            <li class="sidebar-title"><a href="<?php echo base_url('documentation') ; ?>">Documentation</a></li>
+           
           </ul>
         </div>
       </div>
@@ -160,20 +142,20 @@
                   <input type="checkbox" onClick="toggle(this)" />
                   <span></span>
                 </label>
-             
-               </th>
-               <th>User</th>
-               <th>Full Name</th>
-               <th>Email</th>
-               <th>Phone</th>
-               <th>Favorite</th>
-               <th>Delete</th>
-
+              </th>
+              <th>Avatar</th>
+              <th>Nom & Prénom</th>
+              <th>Email</th>
+              <th>Numéro de Télephone</th>
+              <th>Favoris</th>
+              <th>Supprimer</th>
             </tr>
           </thead>
-          <tbody>
-          <?php foreach($Contacts as $Contact){ ?>
-            <tr>
+          <tbody id="listeContact">
+
+            <?php foreach ($contacts as $contact) {?>
+
+            <tr id="contact-"<?php echo $contact->id ;?>>
               <td class="center-align contact-checkbox">
                 <label class="checkbox-label">
                   <input type="checkbox" name="foo" />
@@ -182,20 +164,15 @@
               </td>
               <td><span class="avatar-contact avatar-online"><img src="../../../app-assets/images/avatar/avatar-1.png"
                     alt="avatar"></span></td>
-              <td><?php echo $Contact->first_Name; ?></td>
-              <td><?php echo $Contact->email; ?></td>
-              <td><?php echo $Contact->phone; ?></td>
-              <td><span class="favorite"><i class="material-icons"> star_border </i></span></td>
-              <td><span><i class="material-icons delete">delete_outline</i></span></td>
+              <td><?php echo $contact->last_Name." ".$contact->first_Name ; ?></td>
+              <td><?php echo $contact->email ; ?></td>
+              <td><?php echo $contact->phone ; ?></td>
+              <td><span class="favorite"><i class="material-icons" data-ref="<?php echo $contact->id; ?>" data-nom="<?php echo $contact->last_Name; ?>" > star_border </i></span></td>
+              <td><span class="delete"><i class="material-icons" data-ref="<?php echo $contact->id; ?>" >delete_outline</i></span></td>
             </tr>
-            <tr>
-              <td class="center-align contact-checkbox">
-                <label class="checkbox-label">
-                  <input type="checkbox" name="foo" />
-                </label>
-              </td>
-            </tr>
-            <?php } ?>
+              
+              <?php } ?>
+          
           </tbody>
         </table>
       </div>
@@ -216,43 +193,43 @@
       </div>
       <div class="divider"></div>
       <!-- form start -->
-      <form class="edit-contact-item mb-5 mt-5">
+      <form id="formcontact" class="edit-contact-item mb-5 mt-5">
         <div class="row">
           <div class="input-field col s12">
             <i class="material-icons prefix"> perm_identity </i>
-            <input id="first_name" type="text" class="validate">
-            <label for="first_name">First Name</label>
+            <input id="first_name" name="first_name" type="text" class="validate">
+            <label for="first_name">Prénom</label>
           </div>
           <div class="input-field col s12">
             <i class="material-icons prefix"> perm_identity </i>
-            <input id="last_name" type="text" class="validate">
-            <label for="last_name">Last Name</label>
+            <input id="last_name" name="last_name" type="text" class="validate">
+            <label for="last_name">Nom</label>
           </div>
           <div class="input-field col s12">
             <i class="material-icons prefix"> business </i>
-            <input id="company" type="text" class="validate">
-            <label for="company">Company</label>
+            <input id="company" name="company" type="text" class="validate">
+            <label for="company">Entreprise</label>
           </div>
           <div class="input-field col s12">
             <i class="material-icons prefix"> business_center </i>
-            <input id="business" type="text" class="validate">
-            <label for="business">Job Title</label>
+            <input id="business" name="business" type="text" class="validate">
+            <label for="business">Profession</label>
           </div>
         </div>
         <div class="row">
           <div class="input-field col s12">
             <i class="material-icons prefix"> email </i>
-            <input id="email" type="email" class="validate">
+            <input id="email" name="email" type="email" class="validate">
             <label for="email">Email</label>
           </div>
           <div class="input-field col s12">
             <i class="material-icons prefix"> call </i>
-            <input id="phone" type="text" class="validate">
-            <label for="phone">Phone</label>
+            <input id="phone" name="phone" type="text" class="validate">
+            <label for="phone">Numéro de téléphone</label>
           </div>
           <div class="input-field col s12">
             <i class="material-icons prefix"> note </i>
-            <input id="notes" type="text" class="validate">
+            <input id="notes" name="notes" type="text" class="validate">
             <label for="notes">Notes</label>
           </div>
         </div>
