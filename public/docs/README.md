@@ -32,8 +32,6 @@ elle est aussi doté d'une fonction de mise en favoris
 -.grace au tableau rules dans les fonctions create et edit les utilisateurs doivent impérativement noter les information nécessaire a la fonction associé. 
 
 
-
-
 This API is a data managing tool for a contact list created by Ponceau Nelwick
 
 

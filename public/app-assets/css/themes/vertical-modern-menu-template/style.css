@@ -2801,7 +2801,7 @@ select
 {
     #main
     {
-        padding-left: 260px;
+        /*padding-left: 260px;*/
     }
     #main.main-full
     {
