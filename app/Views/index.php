@@ -155,7 +155,7 @@
 
             <?php foreach ($contacts as $contact) {?>
 
-            <tr class='listTR' id="contact-"<?php echo $contact->id ;?>>
+            <tr class='listTR' id="contact-<?php echo $contact->id ;?>">
               <td class="center-align contact-checkbox">
                 <label class="checkbox-label">
                   <input type="checkbox" name="foo" />

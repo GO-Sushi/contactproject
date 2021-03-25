@@ -73,17 +73,27 @@ $(".Next").on("click", function(e) {
 	page=page+1;
 	$(".listTR").remove();
 	console.log("supprimé");
-	$("#listeContact").append(updateTR());
+	pagination(page);
 });
 
 $(".previous").on("click", function(e) {
 	page=page-1;
    $(".listTR").remove();
    console.log("supprimé");
-   $("#listeContact").append(updateTR());
+   pagination(page);
   
 
 });
+
+$(".delete i").on("click", function(e){
+	var id= $(this).data('ref')
+	console.log($(this).data("ref"));
+	$("#contact-" +id).remove();
+	postToApi('delete');
+	
+	
+});
+
 	 
 	
 function pagination(page){
@@ -94,7 +104,7 @@ function pagination(page){
 		success:function(res){
 			res.forEach(element=>{
 				console.log(element.first_Name)
-				$("#listeContact").append(updateTR());
+				$("#listeContact").append(updateTR(element));
 			})
 			console.log(res)
 		},
@@ -103,7 +113,7 @@ function pagination(page){
 		}});
 }
 
-function updateTR(){
+function updateTR(element){
 	return `<tr class="listTR" id="contact-"${element.id}>>
               <td class="center-align contact-checkbox">
                 <label class="checkbox-label">
@@ -113,17 +123,14 @@ function updateTR(){
               </td>
               <td ><span class="avatar-contact avatar-online"><img src="../../../app-assets/images/avatar/avatar-1.png"
                     alt="avatar"></span></td>
-              <td ><${element.last_Name+" "+$element.first_Name}</td>
+              <td ><${element.last_Name+" "+element.first_Name}</td>
               <td ><${element.email}</td>
               <td ><${element.phone}></td>
               <td ><span class="favorite"><i class="material-icons" data-ref="${element.id}" data-nom="${element.last_Name}"> star_border </i></span></td>
               
               <td><span class="delete"><i class="material-icons" data-ref="${element.id}" >delete_outline</i></span></td>
-             
             </tr>`
 	};
-	
-
 
 
 
