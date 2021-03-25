@@ -174,8 +174,8 @@
             </tr>
               <?php } ?>
               
-              <button class="Next"> next </button>
-              <button class="previous"> previous </button>
+              <button class="Next" style="color:grey darken-4)"> next </button>
+              <button class="previous" style="color:grey darken-4);"> previous </button>
           
           </tbody>
         </table>

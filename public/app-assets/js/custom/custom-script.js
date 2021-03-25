@@ -73,14 +73,14 @@ $(".Next").on("click", function(e) {
 	page=page+1;
 	$(".listTR").remove();
 	console.log("supprimé");
-	$("#listeContact").append(updateTR(id,last_Name,first_Name,email,phone));
+	$("#listeContact").append(updateTR());
 });
 
 $(".previous").on("click", function(e) {
 	page=page-1;
    $(".listTR").remove();
    console.log("supprimé");
-   $("#listeContact").append(updateTR(id,last_Name,first_Name,email,phone));
+   $("#listeContact").append(updateTR());
   
 
 });
@@ -94,7 +94,7 @@ function pagination(page){
 		success:function(res){
 			res.forEach(element=>{
 				console.log(element.first_Name)
-				$("ul").append("<li>"+element.first_Name+"<li>")
+				$("#listeContact").append(updateTR());
 			})
 			console.log(res)
 		},
@@ -103,7 +103,7 @@ function pagination(page){
 		}});
 }
 
-function updateTR(id,last_Name,first_Name,email,phone){
+function updateTR(){
 	return `<tr class="listTR" id="contact-"${element.id}>>
               <td class="center-align contact-checkbox">
                 <label class="checkbox-label">
