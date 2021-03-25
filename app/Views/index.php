@@ -155,23 +155,27 @@
 
             <?php foreach ($contacts as $contact) {?>
 
-            <tr id="contact-"<?php echo $contact->id ;?>>
+            <tr class='listTR' id="contact-"<?php echo $contact->id ;?>>
               <td class="center-align contact-checkbox">
                 <label class="checkbox-label">
                   <input type="checkbox" name="foo" />
                   <span></span>
                 </label>
               </td>
-              <td><span class="avatar-contact avatar-online"><img src="../../../app-assets/images/avatar/avatar-1.png"
+              <td ><span class="avatar-contact avatar-online"><img src="../../../app-assets/images/avatar/avatar-1.png"
                     alt="avatar"></span></td>
-              <td><?php echo $contact->last_Name." ".$contact->first_Name ; ?></td>
-              <td><?php echo $contact->email ; ?></td>
-              <td><?php echo $contact->phone ; ?></td>
-              <td><span class="favorite"><i class="material-icons" data-ref="<?php echo $contact->id; ?>" data-nom="<?php echo $contact->last_Name; ?>" > star_border </i></span></td>
-              <td><span class="delete"><i class="material-icons" data-ref="<?php echo $contact->id; ?>" >delete_outline</i></span></td>
-            </tr>
+              <td ><?php echo $contact->last_Name." ".$contact->first_Name ; ?></td>
+              <td ><?php echo $contact->email ; ?></td>
+              <td ><?php echo $contact->phone ; ?></td>
+              <td ><span class="favorite"><i class="material-icons" data-ref="<?php echo $contact->id; ?>" data-nom="<?php echo $contact->last_Name; ?>" > star_border </i></span></td>
               
+              <td><span class="delete"><i class="material-icons" data-ref="<?php echo $contact->id; ?>" >delete_outline</i></span></td>
+             
+            </tr>
               <?php } ?>
+              
+              <button class="Next"> next </button>
+              <button class="previous"> previous </button>
           
           </tbody>
         </table>
