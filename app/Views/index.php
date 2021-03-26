@@ -168,17 +168,13 @@
               <td ><?php echo $contact->email ; ?></td>
               <td ><?php echo $contact->phone ; ?></td>
               <td ><span class="favorite"><i class="material-icons" data-ref="<?php echo $contact->id; ?>" data-nom="<?php echo $contact->last_Name; ?>" > star_border </i></span></td>
-              
               <td><span class="delete"><i class="material-icons" data-ref="<?php echo $contact->id; ?>" >delete_outline</i></span></td>
-             
             </tr>
               <?php } ?>
-              
-              <button class="Next" style="color:grey darken-4)"> next </button>
-              <button class="previous" style="color:grey darken-4);"> previous </button>
-          
           </tbody>
         </table>
+        <button class="Next" style="color:grey darken-4)"> next </button>
+        <button class="previous" style="color:grey darken-4);"> previous </button>
       </div>
     </div>
   </div>

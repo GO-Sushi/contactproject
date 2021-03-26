@@ -28,8 +28,11 @@ function postToApi(action,dataParam) {
 var page=1;
 
 $(".add-contact").on("click", function (e) {
+	
 	console.log($("#formcontact").serialize()); 
+
 	var param=$("#formcontact").serialize();
+
 	postToApi('create',param);
 });;
 
@@ -70,31 +73,54 @@ $(".Btn4").on("click", function (e) {
 });
 
 $(".Next").on("click", function(e) {
+
 	page=page+1;
+
 	$(".listTR").remove();
+
 	console.log("supprimé");
+
 	pagination(page);
 });
 
 $(".previous").on("click", function(e) {
-	page=page-1;
-   $(".listTR").remove();
-   console.log("supprimé");
-   pagination(page);
-  
 
+	page=page-1;
+
+   $(".listTR").remove();
+
+   console.log("supprimé");
+
+   pagination(page);
 });
 
 $(".delete i").on("click", function(e){
+	
 	var id= $(this).data('ref')
+
 	console.log($(this).data("ref"));
+	
 	$("#contact-" +id).remove();
-	postToApi('delete');
-	
-	
+
+	postToApi('delete');	
 });
 
-	 
+$(".favorite i").on("click", function (e) {
+	
+	var param={
+		id:$(this).data('ref')
+		
+	};
+	console.log($(this).data('ref'))
+	postToApi('favori',param);
+	e.preventDefault();
+	$(this).toggleClass("amber-text");
+ });
+
+$(".contact-compose-sidebar").on("click", function (e){
+
+console.log($("contact-compose-sidebar"))
+});
 	
 function pagination(page){
 	$.ajax({

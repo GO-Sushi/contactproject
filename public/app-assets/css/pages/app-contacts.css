@@ -164,6 +164,7 @@
 {
     margin-top: .25rem;
     padding: .25em .65em;
+    display: none;
 }
 
 .content-area .app-wrapper .dataTables_wrapper .dataTables_paginate .paginate_button.current,
